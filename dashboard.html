@@ -1,115 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #5f2c82, #49a09d);
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
-
-    .dashboard {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      width: 400px;
-      padding: 30px;
-      text-align: center;
-      animation: fadeIn 1.2s ease-in-out;
-    }
-
-    .dashboard h2 {
-      margin-bottom: 10px;
-    }
-
-    .dashboard p {
-      font-size: 15px;
-      opacity: 0.8;
-      margin-bottom: 25px;
-    }
-
-    .dashboard button {
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      border: none;
-      border-radius: 25px;
-      padding: 10px 30px;
-      font-size: 16px;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .dashboard button:hover {
-      background: linear-gradient(135deg, #8e2de2, #4a00e0);
-      transform: scale(1.05);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <div class="dashboard">
-    <h2>Welcome to Your Dashboard</h2>
-    <p id="user-info">Loading user data...</p>
-    <button id="logout-btn">Logout</button>
-  </div>
+  <div class="dashboard-container">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="menu-icon" id="menuToggle">&#9776;</div>
+      <h2 class="title">My Dashboard</h2>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </header>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <a href="home.html">🏠 Home</a>
+      <a href="about.html">👤 About</a>
+      <a href="contact.html">✉️ Contact</a>
+      <a href="blog.html">📰 Blog</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h1>Welcome to Your Dashboard</h1>
+      <p>This is your main control panel. Use the menu to navigate to other pages.</p>
+    </main>
+  </div>
 
   <!-- Firebase Config -->
   <script>
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyCn6crujFRWYDHNq4ELlI-pTZYF_jv2Gw0",
+      authDomain: "my-project-1-website-72696.firebaseapp.com",
+      databaseURL: "https://my-project-1-website-72696-default-rtdb.firebaseio.com",
+      projectId: "my-project-1-website-72696",
+      storageBucket: "my-project-1-website-72696.firebasestorage.app",
+      messagingSenderId: "1049690053611",
+      appId: "1:1049690053611:web:831fe78143d85bd02d97ae"
     };
     firebase.initializeApp(firebaseConfig);
   </script>
 
-  <!-- Dashboard Script -->
+  <!-- Dashboard Logic -->
   <script>
-    const userInfo = document.getElementById('user-info');
-    const logoutBtn = document.getElementById('logout-btn');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    // Check if user is logged in
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // Show user info
-        firebase.database().ref('users/' + user.uid).once('value').then((snapshot) => {
-          const username = snapshot.val()?.username || "User";
-          userInfo.innerHTML = `👋 Hello, <b>${username}</b><br>Email: ${user.email}`;
-        });
-      } else {
-        // If not logged in, redirect to login
-        window.location.href = "index.html";
-      }
+    // Toggle sidebar
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
     });
 
-    // Logout button
+    // Firebase logout
     logoutBtn.addEventListener('click', () => {
       firebase.auth().signOut().then(() => {
-        alert("You have logged out successfully!");
-        window.location.href = "index.html";
+        alert('Logged out successfully');
+        window.location.href = 'index.html';
       });
     });
   </script>
