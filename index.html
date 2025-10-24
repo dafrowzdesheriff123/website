@@ -53,45 +53,43 @@
     </div>
   </div>
 
-  <!-- Firebase SDK (optional for later use) -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
 
+  <!-- Firebase Config -->
   <script>
     const firebaseConfig = {
-  apiKey: "AIzaSyCn6crujFRWYDHNq4ELlI-pTZYF_jv2Gw0",
-  authDomain: "my-project-1-website-72696.firebaseapp.com",
-  databaseURL: "https://my-project-1-website-72696-default-rtdb.firebaseio.com",
-  projectId: "my-project-1-website-72696",
-  storageBucket: "my-project-1-website-72696.firebasestorage.app",
-  messagingSenderId: "1049690053611",
-  appId: "1:1049690053611:web:831fe78143d85bd02d97ae",
-  measurementId: "G-K8QRTLXKLH"
-};
+      apiKey: "AIzaSyCn6crujFRWYDHNq4ELlI-pTZYF_jv2Gw0",
+      authDomain: "my-project-1-website-72696.firebaseapp.com",
+      databaseURL: "https://my-project-1-website-72696-default-rtdb.firebaseio.com",
+      projectId: "my-project-1-website-72696",
+      storageBucket: "my-project-1-website-72696.firebasestorage.app",
+      messagingSenderId: "1049690053611",
+      appId: "1:1049690053611:web:831fe78143d85bd02d97ae",
+      measurementId: "G-K8QRTLXKLH"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
 
-  //Initialize firebase
-  firebase.initializeApp(firebaseConfig);
-</script>  
-
-  <!-- ==== link your JS logic file ==== -->
-  <script src="script.js"></script>
-    
+  <!-- Login/Signup + Firebase Logic -->
   <script>
-    // Page Toggle Animation
     const container = document.getElementById("container");
     const goToSignup = document.getElementById("goToSignup");
     const goToLogin = document.getElementById("goToLogin");
 
+    // Toggle animation between login & signup
     goToSignup.addEventListener("click", () => {
       container.classList.add("active");
     });
-
     goToLogin.addEventListener("click", () => {
       container.classList.remove("active");
     });
 
-    // Placeholder Firebase logic (you can integrate real Firebase here)
+    // =========================
+    // SIGNUP WITH FIREBASE
+    // =========================
     document.getElementById("createAccountBtn").addEventListener("click", () => {
       const username = document.getElementById("signupUsername").value;
       const email = document.getElementById("signupEmail").value;
@@ -102,15 +100,34 @@
         alert("Passwords do not match!");
         return;
       }
-      alert("Account created for " + username + " (" + email + ")");
-      container.classList.remove("active");
+
+      firebase.auth().createUserWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+          const user = userCredential.user;
+
+          // Save user info
+          firebase.database().ref("users/" + user.uid).set({
+            username: username,
+            email: email
+          });
+
+          alert("✅ Account created successfully!");
+          container.classList.remove("active"); // return to login form
+        })
+        .catch((error) => {
+          alert("❌ " + error.message);
+        });
     });
 
+    // =========================
+    // LOGIN WITH FIREBASE
+    // =========================
     document.getElementById("loginBtn").addEventListener("click", () => {
       const email = document.getElementById("loginEmail").value;
       const pass = document.getElementById("loginPassword").value;
-      alert("Logged in as " + email);
-    });
-  </script>
-</body>
-</html>
+
+      firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          alert("✅ Logged in successfully as " + user.email);
+          window.location.href =
