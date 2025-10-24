@@ -10,7 +10,7 @@
   <div class="background"></div>
 
   <div class="container" id="container">
-    <!-- Login Form -->
+    <!-- LOGIN FORM -->
     <div class="form-box login">
       <h2>Welcome Back</h2>
       <form id="loginForm">
@@ -27,7 +27,7 @@
       </form>
     </div>
 
-    <!-- Sign Up Form -->
+    <!-- SIGN UP FORM -->
     <div class="form-box signup">
       <h2>Create Account</h2>
       <form id="signupForm">
@@ -53,12 +53,12 @@
     </div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
+  <!-- Firebase SDKs (COMPAT versions for v11) -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database-compat.js"></script>
 
-  <!-- Firebase Config -->
+  <!-- Initialize Firebase -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCn6crujFRWYDHNq4ELlI-pTZYF_jv2Gw0",
@@ -73,26 +73,26 @@
     firebase.initializeApp(firebaseConfig);
   </script>
 
-  <!-- Login/Signup + Firebase Logic -->
+  <!-- Script logic -->
   <script>
     const container = document.getElementById("container");
     const goToSignup = document.getElementById("goToSignup");
     const goToLogin = document.getElementById("goToLogin");
 
-    // Toggle animation between login & signup
-    goToSignup.addEventListener("click", () => {
+    // Toggle animation
+    goToSignup.addEventListener("click", (e) => {
+      e.preventDefault();
       container.classList.add("active");
     });
-    goToLogin.addEventListener("click", () => {
+    goToLogin.addEventListener("click", (e) => {
+      e.preventDefault();
       container.classList.remove("active");
     });
 
-    // =========================
-    // SIGNUP WITH FIREBASE
-    // =========================
+    // SIGN UP
     document.getElementById("createAccountBtn").addEventListener("click", () => {
-      const username = document.getElementById("signupUsername").value;
-      const email = document.getElementById("signupEmail").value;
+      const username = document.getElementById("signupUsername").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
       const pass = document.getElementById("signupPassword").value;
       const confirm = document.getElementById("signupConfirm").value;
 
@@ -102,32 +102,30 @@
       }
 
       firebase.auth().createUserWithEmailAndPassword(email, pass)
-        .then((userCredential) => {
-          const user = userCredential.user;
-
-          // Save user info
+        .then((cred) => {
+          const user = cred.user;
           firebase.database().ref("users/" + user.uid).set({
             username: username,
             email: email
           });
-
           alert("✅ Account created successfully!");
-          container.classList.remove("active"); // return to login form
+          container.classList.remove("active"); // Go back to login form
         })
-        .catch((error) => {
-          alert("❌ " + error.message);
-        });
+        .catch((error) => alert("❌ " + error.message));
     });
 
-    // =========================
-    // LOGIN WITH FIREBASE
-    // =========================
+    // LOGIN
     document.getElementById("loginBtn").addEventListener("click", () => {
-      const email = document.getElementById("loginEmail").value;
+      const email = document.getElementById("loginEmail").value.trim();
       const pass = document.getElementById("loginPassword").value;
 
       firebase.auth().signInWithEmailAndPassword(email, pass)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          alert("✅ Logged in successfully as " + user.email);
-          window.location.href =
+        .then((cred) => {
+          alert("✅ Logged in successfully!");
+          window.location.href = "dashboard.html"; // Redirect
+        })
+        .catch((error) => alert("❌ " + error.message));
+    });
+  </script>
+</body>
+</html>
