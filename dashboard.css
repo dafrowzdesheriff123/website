@@ -49,13 +49,14 @@ body {
   left: -230px;
   width: 220px;
   height: 100%;
-  background: rgba(20, 0, 40, 0.9); /* darker tone for contrast */
-  backdrop-filter: blur(12px);
+  background: rgba(0, 102, 204, 0.95); /* 💙 Blue sidebar */
+  backdrop-filter: blur(10px);
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.4);
   padding-top: 60px;
   transition: left 0.35s ease;
   display: flex;
   flex-direction: column;
+  z-index: 100;
 }
 
 .sidebar.active {
@@ -68,11 +69,12 @@ body {
   padding: 15px 20px;
   border-left: 4px solid transparent;
   transition: 0.3s;
+  font-size: 1.05rem;
 }
 
 .sidebar a:hover {
   background: rgba(255, 255, 255, 0.2);
-  border-left: 4px solid #bb86fc;
+  border-left: 4px solid #ffffff;
 }
 
 /* Content */
