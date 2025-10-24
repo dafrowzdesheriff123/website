@@ -23,7 +23,9 @@
           <label>Password</label>
         </div>
         <button type="button" id="loginBtn" class="btn">Login</button>
-        <p class="toggle-text">Don’t have an account? <a href="#" id="goToSignup">Sign Up</a></p>
+        <p class="toggle-text">
+          Don’t have an account? <a href="#" id="goToSignup">Sign Up</a>
+        </p>
       </form>
     </div>
 
@@ -48,12 +50,14 @@
           <label>Confirm Password</label>
         </div>
         <button type="button" id="createAccountBtn" class="btn">Sign Up</button>
-        <p class="toggle-text">Already have an account? <a href="#" id="goToLogin">Login</a></p>
+        <p class="toggle-text">
+          Already have an account? <a href="#" id="goToLogin">Login</a>
+        </p>
       </form>
     </div>
   </div>
 
-  <!-- Firebase SDKs (COMPAT versions for v11) -->
+  <!-- Firebase SDKs (COMPAT) -->
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database-compat.js"></script>
@@ -109,22 +113,24 @@
             email: email
           });
           alert("✅ Account created successfully!");
-          container.classList.remove("active"); // Go back to login form
+          container.classList.remove("active");
         })
         .catch((error) => alert("❌ " + error.message));
     });
 
-    // LOGIN
+    // LOGIN (silent redirect)
     document.getElementById("loginBtn").addEventListener("click", () => {
       const email = document.getElementById("loginEmail").value.trim();
       const pass = document.getElementById("loginPassword").value;
 
       firebase.auth().signInWithEmailAndPassword(email, pass)
-        .then((cred) => {
-          alert("✅ Logged in successfully!");
-          window.location.href = "dashboard.html"; // Redirect
+        .then(() => {
+          // Silent redirect (no alerts)
+          window.location.href = "dashboard.html";
         })
-        .catch((error) => alert("❌ " + error.message));
+        .catch((error) => {
+          alert("❌ " + error.message);
+        });
     });
   </script>
 </body>
