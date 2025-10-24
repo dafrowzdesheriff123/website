@@ -28,7 +28,7 @@
     <!-- Main Content -->
     <main class="content">
       <h1>Welcome to Your Dashboard</h1>
-      <p>This is your main control panel. Use the menu to navigate to other pages.</p>
+      <p>Access your sections using the ☰ icon or by swiping from the left edge.</p>
     </main>
   </div>
 
@@ -56,6 +56,30 @@
     menuToggle.addEventListener('click', () => {
       sidebar.classList.toggle('active');
     });
+
+    // Swipe detection for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeDistance = touchEndX - touchStartX;
+      if (swipeDistance > 80) {
+        // Swipe right → open sidebar
+        sidebar.classList.add('active');
+      } else if (swipeDistance < -80) {
+        // Swipe left → close sidebar
+        sidebar.classList.remove('active');
+      }
+    }
 
     // Firebase logout
     logoutBtn.addEventListener('click', () => {
