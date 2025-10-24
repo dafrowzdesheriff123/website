@@ -1,56 +1,58 @@
 // ===== Firebase Authentication Logic =====
 
-// Listen for login
+// LOGIN FUNCTION
 document.getElementById("loginBtn").addEventListener("click", () => {
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
 
-  // Firebase Sign In
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      // Redirect silently to dashboard
+    .then(() => {
+      // 🔇 No alerts, just redirect silently
       window.location.href = "dashboard.html";
     })
     .catch((error) => {
-      alert("Login failed: " + error.message);
+      // Optional: show error message in a friendly way (not as a popup)
+      const errBox = document.createElement("div");
+      errBox.textContent = "Login failed: " + error.message;
+      errBox.style.position = "fixed";
+      errBox.style.bottom = "20px";
+      errBox.style.left = "50%";
+      errBox.style.transform = "translateX(-50%)";
+      errBox.style.background = "rgba(255,0,0,0.8)";
+      errBox.style.color = "#fff";
+      errBox.style.padding = "10px 20px";
+      errBox.style.borderRadius = "10px";
+      errBox.style.zIndex = "9999";
+      document.body.appendChild(errBox);
+      setTimeout(() => errBox.remove(), 3000);
     });
 });
 
-// ===== Sign Up Logic =====
+// SIGN-UP FUNCTION
 document.getElementById("createAccountBtn").addEventListener("click", () => {
-  const username = document.getElementById("signupUsername").value;
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
-  const confirm = document.getElementById("signupConfirm").value;
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value.trim();
+  const confirm = document.getElementById("signupConfirm").value.trim();
 
-  if (password !== confirm) {
-    alert("Passwords do not match!");
-    return;
-  }
+  if (password !== confirm) return;
 
   firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       const user = userCredential.user;
-
-      // Save user info to Firebase Database
       firebase.database().ref("users/" + user.uid).set({
         username: username,
         email: email
       });
-
-      // After sign up, go back to login page
-      alert("Account created successfully! Please log in.");
+      // Silently switch to login view
       document.getElementById("container").classList.remove("active");
     })
-    .catch((error) => {
-      alert("Sign up failed: " + error.message);
-    });
+    .catch(() => {});
 });
 
-// ===== Logout logic (on dashboard page) =====
-// Optional: add this to your dashboard page if needed
-function logoutUser() {
-  firebase.auth().signOut().then(() => {
-    window.location.href = "index.html";
-  });
-}
+// OPTIONAL: Auto redirect if already logged in
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    window.location.href = "dashboard.html";
+  }
+});
