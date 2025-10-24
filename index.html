@@ -56,7 +56,27 @@
   <!-- Firebase SDK (optional for later use) -->
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
 
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyCn6crujFRWYDHNq4ELlI-pTZYF_jv2Gw0",
+  authDomain: "my-project-1-website-72696.firebaseapp.com",
+  databaseURL: "https://my-project-1-website-72696-default-rtdb.firebaseio.com",
+  projectId: "my-project-1-website-72696",
+  storageBucket: "my-project-1-website-72696.firebasestorage.app",
+  messagingSenderId: "1049690053611",
+  appId: "1:1049690053611:web:831fe78143d85bd02d97ae",
+  measurementId: "G-K8QRTLXKLH"
+};
+
+  //Initialize firebase
+  firebase.initializeApp(firebaseConfig);
+</script>  
+
+  <!-- ==== link your JS logic file ==== -->
+  <script src="script.js"></script>
+    
   <script>
     // Page Toggle Animation
     const container = document.getElementById("container");
