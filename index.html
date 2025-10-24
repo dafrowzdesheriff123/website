@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Animated Glass Login</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Optional: inline styles for message feedback */
+    .error-message {
+      color: #ff4b4b;
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+      text-align: left;
+      padding-left: 2px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
 </head>
 <body>
   <div class="background"></div>
@@ -17,10 +34,12 @@
         <div class="input-box">
           <input type="email" id="loginEmail" required />
           <label>Email</label>
+          <p class="error-message" id="emailError"></p>
         </div>
         <div class="input-box">
           <input type="password" id="loginPassword" required />
           <label>Password</label>
+          <p class="error-message" id="passwordError"></p>
         </div>
         <button type="button" id="loginBtn" class="btn">Login</button>
         <p class="toggle-text">
@@ -57,7 +76,7 @@
     </div>
   </div>
 
-  <!-- Firebase SDKs (COMPAT) -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database-compat.js"></script>
@@ -82,6 +101,8 @@
     const container = document.getElementById("container");
     const goToSignup = document.getElementById("goToSignup");
     const goToLogin = document.getElementById("goToLogin");
+    const emailError = document.getElementById("emailError");
+    const passwordError = document.getElementById("passwordError");
 
     // Toggle animation
     goToSignup.addEventListener("click", (e) => {
@@ -118,18 +139,56 @@
         .catch((error) => alert("❌ " + error.message));
     });
 
-    // LOGIN (silent redirect)
+    // LOGIN (silent with inline error messages)
     document.getElementById("loginBtn").addEventListener("click", () => {
       const email = document.getElementById("loginEmail").value.trim();
-      const pass = document.getElementById("loginPassword").value;
+      const pass = document.getElementById("loginPassword").value.trim();
 
+      // Reset messages
+      emailError.style.display = "none";
+      passwordError.style.display = "none";
+
+      let hasError = false;
+
+      // Basic validation
+      if (email === "") {
+        emailError.textContent = "⚠️ Please enter your email";
+        emailError.style.display = "block";
+        hasError = true;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        emailError.textContent = "❌ Invalid email format";
+        emailError.style.display = "block";
+        hasError = true;
+      }
+
+      if (pass === "") {
+        passwordError.textContent = "⚠️ Please enter your password";
+        passwordError.style.display = "block";
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      // Firebase login
       firebase.auth().signInWithEmailAndPassword(email, pass)
         .then(() => {
-          // Silent redirect (no alerts)
-          window.location.href = "dashboard.html";
+          window.location.href = "dashboard.html"; // silent redirect
         })
         .catch((error) => {
-          alert("❌ " + error.message);
+          // Handle Firebase error messages inline
+          if (error.code === "auth/invalid-email") {
+            emailError.textContent = "❌ Invalid email address";
+            emailError.style.display = "block";
+          } else if (error.code === "auth/user-not-found") {
+            emailError.textContent = "❌ No account found with this email";
+            emailError.style.display = "block";
+          } else if (error.code === "auth/wrong-password") {
+            passwordError.textContent = "❌ Incorrect password";
+            passwordError.style.display = "block";
+          } else {
+            passwordError.textContent = "⚠️ " + error.message;
+            passwordError.style.display = "block";
+          }
         });
     });
   </script>
