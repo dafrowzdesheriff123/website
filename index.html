@@ -3,125 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login & Sign Up</title>
+  <title>Animated Glass Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="background"></div>
+
   <div class="container" id="container">
-    <!-- Sign Up Form -->
-    <div class="form-container sign-up-container">
-      <form id="signupForm">
-        <h2>Create Account</h2>
-        <input type="text" id="signupUsername" placeholder="Username" required />
-        <input type="email" id="signupEmail" placeholder="Email" required />
-        <input type="password" id="signupPassword" placeholder="Password" required />
-        <input type="password" id="signupConfirm" placeholder="Confirm Password" required />
-        <button type="button" id="createAccountBtn">Sign Up</button>
-      </form>
-    </div>
-
-    <!-- Sign In Form -->
-    <div class="form-container sign-in-container">
+    <!-- Login Form -->
+    <div class="form-box login">
+      <h2>Welcome Back</h2>
       <form id="loginForm">
-        <h2>Sign In</h2>
-        <input type="email" id="loginEmail" placeholder="Email" required />
-        <input type="password" id="loginPassword" placeholder="Password" required />
-        <a href="#">Forgot your password?</a>
-        <button type="button" id="loginBtn">Sign In</button>
+        <div class="input-box">
+          <input type="email" id="loginEmail" required />
+          <label>Email</label>
+        </div>
+        <div class="input-box">
+          <input type="password" id="loginPassword" required />
+          <label>Password</label>
+        </div>
+        <button type="button" id="loginBtn" class="btn">Login</button>
+        <p class="toggle-text">Don’t have an account? <a href="#" id="goToSignup">Sign Up</a></p>
       </form>
     </div>
 
-    <!-- Overlay Section -->
-    <div class="overlay-container">
-      <div class="overlay">
-        <div class="overlay-panel overlay-left">
-          <h2>Welcome Back!</h2>
-          <p>To stay connected, please login with your details</p>
-          <button class="ghost" id="signIn">Sign In</button>
+    <!-- Sign Up Form -->
+    <div class="form-box signup">
+      <h2>Create Account</h2>
+      <form id="signupForm">
+        <div class="input-box">
+          <input type="text" id="signupUsername" required />
+          <label>Username</label>
         </div>
-        <div class="overlay-panel overlay-right">
-          <h2>Hello, Friend!</h2>
-          <p>Register with your personal details to access all site features</p>
-          <button class="ghost" id="signUp">Sign Up</button>
+        <div class="input-box">
+          <input type="email" id="signupEmail" required />
+          <label>Email</label>
         </div>
-      </div>
+        <div class="input-box">
+          <input type="password" id="signupPassword" required />
+          <label>Password</label>
+        </div>
+        <div class="input-box">
+          <input type="password" id="signupConfirm" required />
+          <label>Confirm Password</label>
+        </div>
+        <button type="button" id="createAccountBtn" class="btn">Sign Up</button>
+        <p class="toggle-text">Already have an account? <a href="#" id="goToLogin">Login</a></p>
+      </form>
     </div>
   </div>
 
-  <!-- Font Awesome for icons -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK (optional for later use) -->
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
 
   <script>
-    // Your Firebase Config (replace this with yours from Firebase Console)
-    const firebaseConfig = {
-      apiKey: "YOUR-API-KEY",
-      authDomain: "YOUR-PROJECT-ID.firebaseapp.com",
-      databaseURL: "https://YOUR-PROJECT-ID.firebaseio.com",
-      projectId: "YOUR-PROJECT-ID",
-      storageBucket: "YOUR-PROJECT-ID.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcd1234"
-    };
+    // Page Toggle Animation
+    const container = document.getElementById("container");
+    const goToSignup = document.getElementById("goToSignup");
+    const goToLogin = document.getElementById("goToLogin");
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    // Switch between Sign In / Sign Up
-    const container = document.getElementById('container');
-    document.getElementById('signUp').addEventListener('click', () => {
-      container.classList.add("right-panel-active");
-    });
-    document.getElementById('signIn').addEventListener('click', () => {
-      container.classList.remove("right-panel-active");
+    goToSignup.addEventListener("click", () => {
+      container.classList.add("active");
     });
 
-    // Sign Up logic
+    goToLogin.addEventListener("click", () => {
+      container.classList.remove("active");
+    });
+
+    // Placeholder Firebase logic (you can integrate real Firebase here)
     document.getElementById("createAccountBtn").addEventListener("click", () => {
-      const username = document.getElementById("signupUsername").value.trim();
-      const email = document.getElementById("signupEmail").value.trim();
-      const password = document.getElementById("signupPassword").value;
+      const username = document.getElementById("signupUsername").value;
+      const email = document.getElementById("signupEmail").value;
+      const pass = document.getElementById("signupPassword").value;
       const confirm = document.getElementById("signupConfirm").value;
 
-      if (!username || !email || !password || !confirm) {
-        alert("Please fill in all fields");
-        return;
-      }
-
-      if (password !== confirm) {
+      if (pass !== confirm) {
         alert("Passwords do not match!");
         return;
       }
-
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          const user = userCredential.user;
-          db.ref('users/' + user.uid).set({
-            username: username,
-            email: email,
-            createdAt: new Date().toISOString()
-          });
-          alert("Account created successfully for " + username);
-          container.classList.remove("right-panel-active");
-        })
-        .catch(error => alert(error.message));
+      alert("Account created for " + username + " (" + email + ")");
+      container.classList.remove("active");
     });
 
-    // Sign In logic
     document.getElementById("loginBtn").addEventListener("click", () => {
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          alert("Welcome back!");
-          window.location.href = "dashboard.html"; // redirect
-        })
-        .catch(error => alert(error.message));
+      const email = document.getElementById("loginEmail").value;
+      const pass = document.getElementById("loginPassword").value;
+      alert("Logged in as " + email);
     });
   </script>
 </body>
