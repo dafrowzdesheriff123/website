@@ -1,13 +1,13 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, rgba(60,0,100,1), rgba(120,0,255,0.6));
+  background: linear-gradient(135deg, rgba(80, 0, 140, 1), rgba(150, 0, 255, 0.7));
   color: white;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* Topbar */
+/* ==== TOP BAR ==== */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -18,12 +18,14 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   position: sticky;
   top: 0;
+  z-index: 1000;
 }
 
 .menu-icon {
   font-size: 28px;
   cursor: pointer;
   transition: transform 0.2s;
+  color: white;
 }
 .menu-icon:active {
   transform: scale(0.9);
@@ -42,42 +44,52 @@ body {
   background: rgba(255, 255, 255, 0.4);
 }
 
-/* Sidebar */
+/* ==== SIDEBAR ==== */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -230px;
-  width: 220px;
+  left: -180px; /* hides sidebar initially */
+  width: 170px; /* thinner sidebar */
   height: 100%;
-  background: rgba(0, 102, 204, 0.95); /* 💙 Blue sidebar */
-  backdrop-filter: blur(10px);
-  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.4);
+  background-color: #ffffff; /* 🤍 pure white sidebar */
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
   padding-top: 60px;
   transition: left 0.35s ease;
   display: flex;
   flex-direction: column;
-  z-index: 100;
+  z-index: 200;
 }
 
 .sidebar.active {
   left: 0;
 }
 
+/* Sidebar links */
 .sidebar a {
-  color: #fff;
+  color: #333; /* dark text for contrast */
   text-decoration: none;
-  padding: 15px 20px;
+  padding: 14px 18px;
+  font-size: 1rem;
   border-left: 4px solid transparent;
   transition: 0.3s;
-  font-size: 1.05rem;
+  font-weight: 500;
+  display: block;
 }
 
+/* Hover + active styles */
 .sidebar a:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-left: 4px solid #ffffff;
+  background-color: #f1f1f1;
+  border-left: 4px solid #6c63ff; /* violet highlight */
+  color: #6c63ff;
 }
 
-/* Content */
+.sidebar a.active {
+  background-color: #e8e6ff;
+  border-left: 4px solid #6c63ff;
+  color: #6c63ff;
+}
+
+/* ==== MAIN CONTENT ==== */
 .content {
   margin-top: 60px;
   padding: 40px 20px;
